@@ -1,0 +1,23 @@
+// Machine Code  // Assembly Instruction
+//----------------------------------------------------------------------------------------------------
+001002b7         // lui x5, 0x100             // Load Upper Immediate: x5 = 0x100000 (memory base pointer)
+00a00337         // lui x6, 0xa00             // Load Upper Immediate: x6 = 0xa00000 (a large value)
+00500393         // addi x7, x0, 5            // Add Immediate: x7 = 0 + 5 = 5
+40730333         // sub x6, x6, x7            // Subtract: x6 = x6 - x7. Sets up dependency for the next instruction.
+00630433         // add x8, x6, x6            // Add: Tests EX->EX forwarding from the 'sub' instruction.
+00100493         // addi x9, x0, 1            // Add Immediate: x9 = 1. Independent instruction to create a gap.
+4084d4b3         // sra x9, x9, x8            // Shift Right Arithmetic: Tests MEM->EX forwarding from the 'add' instruction.
+0002a503         // lw x10, 0(x5)             // Load Word: x10 = memory[0x100000].
+00a505b3         // add x11, x10, x10         // Add: Tests Load-Use Hazard. Must cause a STALL.
+00a00937         // lui x18, 0xa00            // Load Upper Immediate: Setup value for branch comparison.
+00999463         // bne x19, x9, NO_TAKEN     // Branch Not Equal: This branch is NOT TAKEN. Pipeline should continue.
+00a009b7         // lui x19, 0xa00            // Load Upper Immediate: This instruction MUST be executed.
+01290663         // beq x18, x18, IS_TAKEN    // Branch Equal: This branch is ALWAYS TAKEN. Must cause a FLUSH.
+00100a13         // addi x20, x0, 1           // FLUSHED: This instruction is in IF/ID when the branch is taken.
+00100a93         // addi x21, x0, 1           // FLUSHED: This instruction is in IF when the branch is taken.
+00500e93         // addi x29, x0, 5           // Target of the BEQ instruction. This is executed after the jump.
+00000f17         // auipc x30, 0              // Add Upper Immediate to PC: x30 = PC + 0. Tests U-type.
+00c000ef         // jal x1, END_LOOP          // Jump And Link: Unconditional jump. Must cause a FLUSH.
+00100b13         // addi x22, x0, 1           // FLUSHED: This instruction is squashed due to the JAL.
+00100b93         // addi x23, x0, 1           // FLUSHED: This instruction is also squashed due to the JAL.
+0000006f         // jal x0, END_LOOP          // Jump And Link: Infinite loop (jumps to itself) to end the test.
