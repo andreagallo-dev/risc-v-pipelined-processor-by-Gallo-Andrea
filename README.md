@@ -2,7 +2,7 @@
 
 This project details the design, implementation, and verification of a 5-stage pipelined processor, fully compliant with the RISC-V RV32I base integer instruction set. The primary objective was to tackle the practical challenges of modern computer architecture, with a specific focus on pipeline hazard management to ensure correct program execution. The entire processor is described in SystemVerilog.
 
-![Pipeline Block Diagram](Pipeline Block Diagram.png)
+![Pipeline Block Diagram](Pipeline Block Diagram.jpeg)
 
 ### Key Features
 
